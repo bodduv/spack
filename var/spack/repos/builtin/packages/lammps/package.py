@@ -74,7 +74,7 @@ class Lammps(CMakePackage, CudaPackage):
                           'user-phonon', 'user-plumed', 'user-ptm', 'user-qtb',
                           'user-reaction', 'user-reaxc', 'user-sdpd',
                           'user-smd', 'user-smtbq', 'user-sph', 'user-tally',
-                          'user-uef', 'user-yaff', 'voronoi']
+                          'user-uef', 'user-yaff', 'voronoi', 'vtk']
 
     for pkg in supported_packages:
         variant(pkg, default=False,
@@ -103,6 +103,7 @@ class Lammps(CMakePackage, CudaPackage):
     depends_on('mpi', when='+mpiio')
     depends_on('fftw-api@3', when='+kspace')
     depends_on('voropp+pic', when='+voronoi')
+    depends_on('vtk', when='+vtk')
     depends_on('netcdf-c+mpi', when='+user-netcdf')
     depends_on('blas', when='+user-atc')
     depends_on('lapack', when='+user-atc')
@@ -240,6 +241,8 @@ class Lammps(CMakePackage, CudaPackage):
             args.append('-DDOWNLOAD_EIGEN3=no')
             args.append('-DEIGEN3_INCLUDE_DIR={0}'.format(
                 self.spec['eigen'].prefix.include))
+        if '+vtk' in spec:
+            args.append('-DPKG_VTK=yes')
 
         return args
 
